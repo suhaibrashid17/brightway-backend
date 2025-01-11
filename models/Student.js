@@ -17,6 +17,9 @@ const StudentSchema = new mongoose.Schema({
     mother_phone : {
         type:String,
     },
+    class : {
+        type:String,
+    },
     monthly_fee : {
         type:Number,
     },

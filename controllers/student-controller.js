@@ -5,7 +5,7 @@ const AddStudent = async(req, res) => {
     try {
         const studentExists = await Student.findOne({ roll_num: req.body.roll_num });
         if (studentExists) {
-            res.status(404).json({ error: "A Student with this roll number already exists" });
+            res.status(400).json({ error: "A Student with this roll number already exists" });
         } else {
             const response = await Student.create({
                 first_name: req.body.first_name,
@@ -19,6 +19,7 @@ const AddStudent = async(req, res) => {
                 father_cnic: req.body.father_cnic,
                 father_phone: req.body.father_phone,
                 mother_phone: req.body.mother_phone,
+                class: req.body.class,
                 monthly_fee: req.body.monthly_fee,
                 status: req.body.status,
             });
@@ -127,5 +128,14 @@ const GetStudents = async (req, res) => {
         console.log(err);
     }
 };
+const GetStudentsByClass = async(req, res)=>{
+    try {
+        const students = await Student.find({class:req.params.class});
+        res.status(200).json(students);
+    } catch (err) {
+        res.status(500).json({ error: err });
+        console.log(err);
+    }
+}
 
-module.exports = { AddStudent, RemoveStudent, UpdateStudent, GetStudent, GetStudents };
+module.exports = { AddStudent, RemoveStudent, UpdateStudent, GetStudent, GetStudents, GetStudentsByClass };

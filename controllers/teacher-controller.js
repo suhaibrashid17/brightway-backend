@@ -3,9 +3,9 @@ const Teacher = require('../models/Teacher.js');
 
 const AddTeacher = async(req, res) => {
     try {
-        const teacherExists = await Teacher.findOne({ roll_num: req.body.cnic });
+        const teacherExists = await Teacher.findOne({ cnic: req.body.cnic });
         if (teacherExists) {
-            res.status(404).json({ error: "Teacher already exists (duplicate cnic)" });
+            res.status(400).json({ error: "Teacher already exists (duplicate cnic)" });
         } else {
             const response = await Teacher.create({
                 first_name: req.body.first_name,
@@ -15,8 +15,9 @@ const AddTeacher = async(req, res) => {
                 city: req.body.city,
                 address: req.body.address,
                 cnic : req.body.cnic,
-                phone_no : req.body.phone_no,
-                salary : req.body.status,
+                phone_num : req.body.phone_no,
+                salary : req.body.salary,
+                status : "active"
             });
 
             const zkInstance = new ZKLib('192.168.10.201', 4370, 5200, 5000);
@@ -26,7 +27,7 @@ const AddTeacher = async(req, res) => {
                     await zkInstance.createSocket();
                     console.log("Connected to the ZK instance successfully");
                     const obj = await zkInstance.getInfo();
-                    await zkInstance.setUser(obj.userCounts + 1, req.body.cnic, req.body.first_name + ' ' + req.body.last_name, '', 1);
+                    await zkInstance.setUser(obj.userCounts + 1, req.body.cnic, req.body.first_name + ' ' + req.body.last_name, '', 0);
                     console.log("User Registered on Device");
                 } catch (e) {
                     console.log(e);

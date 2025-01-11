@@ -4,12 +4,15 @@ const mongoose = require('mongoose');
 const student = require('./routes/student-routes');
 const teacher = require('./routes/teacher-routes');
 const user = require('./routes/user-routes');
+const attendance = require('./routes/attendance-routes')
 const cors=require('cors');
+const axios = require('axios')
 app.use(cors());
 app.use(express.json());
 app.use("/api/student", student);
 app.use("/api/teacher", teacher);
 app.use("/api/user", user);
+app.use("/api/attendance", attendance);
 
 const PORT_NUM = 8080 || process.env.PORT_NUM;
 mongoose.connect('mongodb://localhost:27017/Brightway')
@@ -24,7 +27,9 @@ mongoose.connect('mongodb://localhost:27017/Brightway')
 
 const ZKLib = require('zkteco-js');
 const zkInstance = new ZKLib('192.168.10.201', 4370, 5200, 5000);
-
+const markAttendance = async(AttDetails)=>{
+    const response = await axios.post("http://localhost:8080/api/attendance/markattendance",AttDetails);
+}
 const connectZKInstance = async () => {
     try {
         await zkInstance.createSocket();
@@ -32,6 +37,7 @@ const connectZKInstance = async () => {
         await zkInstance.enableDevice();
         await zkInstance.getRealTimeLogs((realTimeLog) => {
             console.log(realTimeLog);
+            markAttendance(realTimeLog);
         });
     } catch (e) {
         console.log(e);
