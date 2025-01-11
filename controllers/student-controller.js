@@ -129,8 +129,11 @@ const GetStudents = async (req, res) => {
     }
 };
 const GetStudentsByClass = async(req, res)=>{
+    const { class: students_class } = req.query; 
+    console.log("inside controller");
+    console.log(`Class received: ${students_class}`);
     try {
-        const students = await Student.find({class:req.params.class});
+        const students = await Student.find({ class: students_class });
         res.status(200).json(students);
     } catch (err) {
         res.status(500).json({ error: err });
