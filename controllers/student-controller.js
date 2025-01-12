@@ -141,4 +141,18 @@ const GetStudentsByClass = async(req, res)=>{
     }
 }
 
-module.exports = { AddStudent, RemoveStudent, UpdateStudent, GetStudent, GetStudents, GetStudentsByClass };
+const GetFatherPhoneById = async(req, res)=>{
+    const { roll_num: roll_num } = req.query; 
+    console.log("inside controller");
+    console.log(`Roll Number received: ${roll_num}`);
+    try {
+        const students = await Student.findOne({ roll_num: roll_num });
+        console.log(students)
+        res.status(200).json(students.father_phone);
+    } catch (err) {
+        res.status(500).json({ error: err });
+        console.log(err);
+    }
+}
+
+module.exports = { AddStudent, RemoveStudent, UpdateStudent, GetStudent, GetStudents, GetStudentsByClass, GetFatherPhoneById };
