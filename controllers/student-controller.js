@@ -7,6 +7,29 @@ const AddStudent = async(req, res) => {
         if (studentExists) {
             res.status(400).json({ error: "A Student with this roll number already exists" });
         } else {
+            
+            const zkInstance = new ZKLib('192.168.10.201', 4370, 5200, 5000);
+            
+            const connectZKInstance = async () => {
+                try {
+                    await zkInstance.createSocket();
+                    console.log("Connected to the ZK instance successfully");
+                    const obj = await zkInstance.getInfo();
+                    let uid = String(obj.userCounts + 1);
+                    await zkInstance.setUser(obj.userCounts + 1,uid , req.body.first_name + ' ' + req.body.last_name, '', 0);
+                    console.log("User Registered on Device");
+                    
+                    return uid;
+
+                } catch (e) {
+                    console.log(e);
+                    if (e.code === 'EADDRINUSE') {
+                        console.log("Address in use");
+                    }
+                }
+            };
+        
+            let uid = await connectZKInstance();
             const response = await Student.create({
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -20,28 +43,13 @@ const AddStudent = async(req, res) => {
                 father_phone: req.body.father_phone,
                 mother_phone: req.body.mother_phone,
                 class: req.body.class,
+                field: req.body.field,
+                section: req.body.section,
                 monthly_fee: req.body.monthly_fee,
                 status: req.body.status,
+                device_uid: uid,
             });
-
-            const zkInstance = new ZKLib('192.168.10.201', 4370, 5200, 5000);
-
-            const connectZKInstance = async () => {
-                try {
-                    await zkInstance.createSocket();
-                    console.log("Connected to the ZK instance successfully");
-                    const obj = await zkInstance.getInfo();
-                    await zkInstance.setUser(obj.userCounts + 1, req.body.roll_num, req.body.first_name + ' ' + req.body.last_name, '', 0);
-                    console.log("User Registered on Device");
-                } catch (e) {
-                    console.log(e);
-                    if (e.code === 'EADDRINUSE') {
-                        console.log("Address in use");
-                    }
-                }
-            };
-
-            connectZKInstance();
+            
             res.status(200).json(response);
         }
     } catch (err) {
@@ -90,6 +98,7 @@ const UpdateStudent = async (req, res) => {
             father_phone: req.body.father_phone,
             mother_phone: req.body.mother_phone,
             monthly_fee: req.body.monthly_fee,
+            field: req.body.field,
             status: req.body.status,
         });
 

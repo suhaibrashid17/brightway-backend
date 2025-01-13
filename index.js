@@ -29,19 +29,19 @@ mongoose.connect('mongodb://localhost:27017/Brightway')
 
 const ZKLib = require('zkteco-js');
 const zkInstance = new ZKLib('192.168.10.201', 4370, 5200, 5000);
-const client = new Client({
-    authStrategy: new LocalAuth()
-});
+// const client = new Client({
+//     authStrategy: new LocalAuth()
+// });
 
 
-client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
-});
-client.on('ready', () => {
-    console.log('Client is ready!');
-});
+// client.on('qr', qr => {
+//     qrcode.generate(qr, {small: true});
+// });
+// client.on('ready', () => {
+//     console.log('Client is ready!');
+// });
 
-client.initialize();
+// client.initialize();
 const markAttendance = async(AttDetails)=>{
     const response = await axios.post("http://localhost:8080/api/attendance/markattendance",AttDetails);
 }
@@ -63,11 +63,12 @@ const connectZKInstance = async () => {
         await zkInstance.createSocket();
         console.log("Connected to the ZK instance successfully");
         await zkInstance.enableDevice();
+       
         await zkInstance.getRealTimeLogs((realTimeLog) => {
             console.log(realTimeLog);
             markAttendance(realTimeLog);
             console.log(realTimeLog.userId)
-            const number = getNumber(realTimeLog.userId)
+            // const number = getNumber(realTimeLog.userId)
             
             
         });

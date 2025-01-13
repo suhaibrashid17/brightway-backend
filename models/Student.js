@@ -20,8 +20,17 @@ const StudentSchema = new mongoose.Schema({
     class : {
         type:String,
     },
+    field : {
+        type:String,
+    },
+    section : {
+        type:String,
+    },
     monthly_fee : {
         type:Number,
+    },
+    device_uid: {
+        type:String
     },
     
     status : {
