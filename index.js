@@ -7,6 +7,7 @@ const student = require('./routes/student-routes');
 const teacher = require('./routes/teacher-routes');
 const user = require('./routes/user-routes');
 const attendance = require('./routes/attendance-routes')
+const test = require('./routes/test-routes')
 const cors=require('cors');
 const axios = require('axios')
 app.use(cors());
@@ -15,7 +16,7 @@ app.use("/api/student", student);
 app.use("/api/teacher", teacher);
 app.use("/api/user", user);
 app.use("/api/attendance", attendance);
-
+app.use("/api/test", test);
 const PORT_NUM = 8080 || process.env.PORT_NUM;
 mongoose.connect('mongodb://localhost:27017/Brightway')
     .then(() => 
@@ -80,6 +81,6 @@ const connectZKInstance = async () => {
     }
 };
 
-connectZKInstance();
+// connectZKInstance();
 
 
