@@ -33,6 +33,28 @@ const MarkUserAttendance = async (req, res) => {
         console.log(err);
     }
 };
+const SaveAttendance = async (req, res) => {
+    try {
+      const attendanceData = req.body;
+      const savedAttendance = await StudentAttendance.insertMany(attendanceData);
+      res.status(200).json(savedAttendance);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+  
+  const FetchAttendance = async (req, res) => {
+    const { class: studentsClass, month, year } = req.query;
+    try {
+      const startDate = new Date(year, month, 1);
+      const endDate = new Date(year, month + 1, 0);
+      const attendanceData = await StudentAttendance.find({
+        DnT: { $gte: startDate, $lte: endDate },
+      });
+      res.status(200).json(attendanceData);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
 
-
-module.exports = {MarkUserAttendance}
+module.exports = {MarkUserAttendance, SaveAttendance, FetchAttendance}
